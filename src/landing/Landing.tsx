@@ -184,7 +184,7 @@ function Features() {
 const GUARANTEES = [
   { icon: ServerOff, title: 'No backend', body: 'EasyJSON is a set of static files. There is no EasyJSON server to receive your data. Parsing, graphing and diffing all happen in your browser tab.' },
   { icon: HardDrive, title: 'Stored on your device', body: 'Your current document and settings are kept in your browser’s local storage so they are there when you come back. You can wipe it at any time from your browser settings.' },
-  { icon: Cpu, title: 'AI on your hardware', body: 'AI requests go only to the model server you choose, by default Ollama or LM Studio on localhost. No API keys, no per-token bills.' },
+  { icon: Cpu, title: 'AI on your hardware', body: 'AI requests go only to the model server you choose, by default LM Studio or Ollama on localhost. No API keys, no per-token bills.' },
   { icon: EyeOff, title: 'No tracking', body: 'No analytics, no cookies, no third-party scripts or fonts. The page makes no requests except for its own files and your local model.' },
   { icon: WifiOff, title: 'Works offline', body: 'After your first visit the app is cached on your device. Open it on a plane, on a locked-down network, or with Wi-Fi off.' },
   { icon: UserX, title: 'No account', body: 'Nothing to sign up for and nothing to log in to. Open the page and start working.' },
@@ -243,7 +243,7 @@ function LocalDiagram() {
               <Cpu size={16} /> Local model server
             </div>
             <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-              <li>Ollama, LM Studio, llama.cpp…</li>
+              <li>LM Studio, Ollama, llama.cpp…</li>
               <li>Runs on your CPU or GPU</li>
               <li>Optional: only needed for AI</li>
             </ul>
@@ -307,7 +307,7 @@ function CodeLine({ children }: { children: string }) {
 }
 
 function LocalAI() {
-  const [tab, setTab] = useState<'ollama' | 'lmstudio' | 'other'>('ollama');
+  const [tab, setTab] = useState<'ollama' | 'lmstudio' | 'other'>('lmstudio');
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(origin);
   return (
@@ -338,8 +338,8 @@ function LocalAI() {
           <div className="flex border-b bg-muted px-2" role="tablist">
             {(
               [
-                ['ollama', 'Ollama'],
                 ['lmstudio', 'LM Studio'],
+                ['ollama', 'Ollama'],
                 ['other', 'Other servers'],
               ] as const
             ).map(([id, label]) => (

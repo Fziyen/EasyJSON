@@ -9,7 +9,7 @@ npm install
 npm run dev      # http://localhost:5173  (landing page) and /app/ (editor)
 npm run build    # production build in dist/
 npm run preview  # serve the production build locally
-npm run check    # typecheck + lint + build, same as CI
+npm run check    # typecheck + lint + build
 ```
 
 Requires Node 22 (see `.nvmrc`).
@@ -44,8 +44,8 @@ The app talks to the model server straight from the browser.
 
 | Provider | Default URL | Notes |
 | --- | --- | --- |
-| Ollama | `http://localhost:11434` | `ollama serve`, then `ollama pull <model>`. Localhost origins are allowed by default; for other origins set `OLLAMA_ORIGINS`. |
 | LM Studio | `http://localhost:1234/v1` | Developer tab → start server → enable **CORS**. |
+| Ollama | `http://localhost:11434` | `ollama serve`, then `ollama pull <model>`. Localhost origins are allowed by default; for other origins set `OLLAMA_ORIGINS`. |
 | Other (OpenAI-compatible) | `http://localhost:8080/v1` | llama.cpp server, vLLM, LocalAI, Jan… must send CORS headers. |
 
 Small coder/instruct models (Qwen 2.5/3 Coder, Llama 3.x, etc.) work well for these tasks.
@@ -69,38 +69,3 @@ src/
     ui/          shadcn/ui components
   lib/           JSON helpers, graph building + layout, storage
 ```
-
-## Deploying
-
-The build output in `dist/` is plain static files. There is no server to run and nothing to configure at runtime.
-
-### Push to GitHub
-
-```bash
-git init
-git add .
-git commit -m "EasyJSON"
-git branch -M main
-git remote add origin git@github.com:<you>/easyjson.git
-git push -u origin main
-```
-
-`.github/workflows/ci.yml` runs typecheck, lint and build on every push and pull request.
-
-### Pick a host
-
-| Host | Setup |
-| --- | --- |
-| **Netlify** | Import the repo. `netlify.toml` sets the build command, output folder and Node version. Headers come from `public/_headers`. |
-| **Cloudflare Pages** | Import the repo, framework preset "None", build command `npm run build`, output `dist`, env `NODE_VERSION=22`. Headers come from `public/_headers`. |
-| **Vercel** | Import the repo. `vercel.json` sets the build, output and headers. |
-| **Anything else** (S3, nginx, GitHub Pages at a custom domain) | Run `npm run build` and upload `dist/`. Recreate the headers from `public/_headers` if your host supports custom headers. |
-
-The site must be served from the root of a domain or subdomain (for example `easyjson.example.com`), since pages and the service worker use absolute paths.
-
-### Production notes
-
-- **Security headers**: a strict Content-Security-Policy allows scripts and styles only from the site itself, and network requests only to the site and to `localhost` / `127.0.0.1` on any port (the user's model server). If people run their model on another machine (e.g. `http://192.168.1.20:11434`), add that origin to `connect-src` in both `public/_headers` and `vercel.json`.
-- **Offline**: `public/sw.js` precaches both pages and their assets on the first visit. Built assets are content-hashed and cached forever; pages are network-first so new deploys show up immediately. Bump `CACHE` in `sw.js` if you ever need to force-clear old caches.
-- **Local AI from a hosted site**: browsers may ask the user for permission to connect to their local network the first time. Ollama only accepts requests from localhost origins by default, so users of the hosted site need to start it with `OLLAMA_ORIGINS="https://your-domain"`. The landing page shows that exact command with your domain filled in. LM Studio needs "Enable CORS".
-- **Social previews**: `index.html` has title and description tags. Add an `og:image` (1200×630 PNG in `public/`, absolute URL) if you want rich link cards.

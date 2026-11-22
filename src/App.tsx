@@ -22,7 +22,7 @@ import { Inspector } from '@/components/graph/Inspector';
 import { AIPanel } from '@/components/ai/AIPanel';
 import { Logo } from '@/components/Logo';
 import { Button, IconButton } from '@/components/ui/IconButton';
-import { defaultAISettings, currentSettings, type AISettings } from '@/ai/settings';
+import { AI_SETTINGS_KEY, currentSettings, initialAISettings, type AISettings } from '@/ai/settings';
 import { getProvider } from '@/ai/registry';
 import { format, minify, parseJson, quickRepair, stats } from '@/lib/json';
 import type { Segs } from '@/lib/graph';
@@ -49,7 +49,8 @@ export default function App() {
   const [view, setView] = useState<View>(() => (window.innerWidth < 768 ? 'graph' : 'split'));
   const [split, setSplit] = useState(38);
   const [aiOpen, setAiOpen] = useState(false);
-  const [aiSettings, setAiSettings] = usePersistent<AISettings>('easyjson.ai', defaultAISettings);
+  const [initialAi] = useState(initialAISettings);
+  const [aiSettings, setAiSettings] = usePersistent<AISettings>(AI_SETTINGS_KEY, initialAi);
   const [selected, setSelected] = useState<Segs | null>(null);
   const [aiScope, setAiScope] = useState<Segs | null>(null);
   const [toast, setToast] = useState<string | null>(null);
