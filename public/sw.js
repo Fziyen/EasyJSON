@@ -3,8 +3,8 @@
  * After the first visit the landing page and the app work without a network connection.
  * Only same-origin GET requests are cached; calls to your local AI server are never touched.
  */
-const CACHE = 'easyjson-v1';
-const SHELL = ['/', '/app/', '/theme.js', '/favicon.svg', '/manifest.webmanifest'];
+const CACHE = 'easyjson-v2';
+const SHELL = ['/', '/app/', '/theme.js', '/icon.svg', '/manifest.webmanifest'];
 
 // Precache both pages plus every script/stylesheet they reference, so the first visit is enough for offline use.
 async function precache() {
