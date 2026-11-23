@@ -21,6 +21,7 @@ import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { Inspector } from '@/components/graph/Inspector';
 import { AIPanel } from '@/components/ai/AIPanel';
 import { Logo } from '@/components/Logo';
+import { FileName, cleanFileName } from '@/components/FileName';
 import { Button, IconButton } from '@/components/ui/IconButton';
 import { AI_SETTINGS_KEY, currentSettings, initialAISettings, type AISettings } from '@/ai/settings';
 import { getProvider } from '@/ai/registry';
@@ -33,6 +34,7 @@ import { cn } from '@/lib/utils';
 type View = 'editor' | 'split' | 'graph';
 
 const DOC_KEY = 'easyjson.document';
+const NAME_KEY = 'easyjson.filename';
 
 function readDoc() {
   try {
@@ -44,7 +46,20 @@ function readDoc() {
 
 export default function App() {
   const [input, setInput] = useState(readDoc);
-  const [fileName, setFileName] = useState('untitled.json');
+  const [fileName, setFileName] = useState(() => {
+    try {
+      return localStorage.getItem(NAME_KEY) ?? 'untitled.json';
+    } catch {
+      return 'untitled.json';
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem(NAME_KEY, fileName);
+    } catch {
+      /* ignore */
+    }
+  }, [fileName]);
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
   const [view, setView] = useState<View>(() => (window.innerWidth < 768 ? 'graph' : 'split'));
   const [split, setSplit] = useState(38);
@@ -103,7 +118,7 @@ export default function App() {
     setInput(text);
     setSelected(null);
     setAiScope(null);
-    setFileName(name ?? 'untitled.json');
+    setFileName(name ? cleanFileName(name) : 'untitled.json');
     if (name) flash(`Opened ${name}`);
   };
 
@@ -199,9 +214,7 @@ export default function App() {
               <span className="text-sm font-semibold">EasyJSON</span>
             </a>
             <span className="text-faint">/</span>
-            <span className="truncate text-sm text-muted-foreground" title={fileName}>
-              {fileName}
-            </span>
+            <FileName value={fileName} onChange={setFileName} />
           </div>
           <div className="ml-auto flex items-center gap-1.5">
             <input ref={fileRef} type="file" accept=".json,application/json,text/plain" hidden onChange={(e) => e.target.files?.[0] && openFile(e.target.files[0])} />
