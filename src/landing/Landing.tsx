@@ -8,6 +8,7 @@ import {
   Cpu,
   EyeOff,
   GitCompare,
+  Globe,
   HardDrive,
   Keyboard,
   Laptop,
@@ -28,6 +29,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { GraphPreview } from './GraphPreview';
+import { GitHubIcon } from '@/components/GitHubIcon';
+import { LINKS } from './links';
 
 const APP = '/app/';
 
@@ -92,6 +95,11 @@ function Nav({ dark, onTheme }: { dark: boolean; onTheme: () => void }) {
           <a href="#faq" className="hover:text-foreground">FAQ</a>
         </nav>
         <div className="ml-auto flex items-center gap-2">
+          <Button asChild variant="outline" size="sm" className="h-7">
+            <a href={LINKS.repo} target="_blank" rel="noopener noreferrer" aria-label="EasyJSON on GitHub">
+              <GitHubIcon size={14} /> <span className="hidden sm:inline">GitHub</span>
+            </a>
+          </Button>
           <Button variant="outline" size="icon-sm" onClick={onTheme} aria-label={dark ? 'Light theme' : 'Dark theme'}>
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </Button>
@@ -452,11 +460,18 @@ function FinalCTA() {
       <Container className="text-center">
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Open a file. See the shape of your data.</h2>
         <p className="mx-auto mt-3 max-w-xl text-[15px] text-muted-foreground">No sign-up, no upload, no waiting. It runs right here in your browser.</p>
-        <Button asChild size="lg" className="mt-7">
-          <a href={APP}>
-            Open the editor <ArrowRight size={16} />
-          </a>
-        </Button>
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <Button asChild size="lg">
+            <a href={APP}>
+              Open the editor <ArrowRight size={16} />
+            </a>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <a href={LINKS.repo} target="_blank" rel="noopener noreferrer">
+              <GitHubIcon size={16} /> View source on GitHub
+            </a>
+          </Button>
+        </div>
       </Container>
     </section>
   );
@@ -466,15 +481,27 @@ function Footer() {
   return (
     <footer className="border-t bg-muted">
       <Container className="flex flex-col items-center justify-between gap-3 py-6 text-sm text-muted-foreground sm:flex-row">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
           <Logo size={18} />
           <span>EasyJSON</span>
-          <span className="text-faint">· Private, local, offline</span>
+          <span className="text-faint">·</span>
+          <span>
+            Made by{' '}
+            <a href={LINKS.portfolio} target="_blank" rel="noopener" className="font-medium text-foreground hover:underline">
+              {LINKS.portfolioLabel}
+            </a>
+          </span>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           <a href={APP} className="hover:text-foreground">Editor</a>
           <a href="#privacy" className="hover:text-foreground">Privacy</a>
           <a href="#local-ai" className="hover:text-foreground">Local AI</a>
+          <a href={LINKS.repo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-foreground">
+            <GitHubIcon size={14} /> Source
+          </a>
+          <a href={LINKS.portfolio} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 hover:text-foreground">
+            <Globe size={14} /> Portfolio
+          </a>
         </div>
       </Container>
     </footer>
